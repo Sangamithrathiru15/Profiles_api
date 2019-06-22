@@ -9,7 +9,7 @@ class UserProfileManager(BaseUserManager):
         if not email:
             raise ValueError("User must have an email address")
 
-        email=self.normalize_emai(email)#to normalize the emails(@gmail to chaneg to lower case)
+        email=self.normalize_email(email)#to normalize the emails(@gmail to chaneg to lower case)
         user=self.model(email=email,name=name)#is passed to the model for which the manager is created for
 
         user.set_password(password)#comes with abstrat user model.to encrypt the password
