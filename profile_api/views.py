@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status#contains status codes for returning responses from api
 from profile_api import serializers
 from rest_framework import viewsets
+from profile_api import models
+from rest_framework.authentication import TokenAuthentication
+from profile_api import permissions
 
 class HelloApiView(APIView):
     """Test API view"""
@@ -93,3 +96,12 @@ class HelloViewSet(viewsets.ViewSet):
     def destroy(self,request,pk=None):
         """to handle the removal of an object by its id"""
         return Response({'http_method':'DELETE'})
+
+class UserProfileViewset(viewsets.ModelViewSet):
+    #modelviewset is similar to normal viewset except that it is specificlly for models
+    """handle creatng and updating profile"""
+    serializer_class=serializers.UserProfileSerializer#connect to the serializer
+    queryset=models.UserProfile.objects.all()#these data will be managed by vuewset
+    #create,list,update,delete to manage specific models on the dbs
+    authentication_classes=(TokenAuthentication,)
+    permission_classes=(permissions.UpdateOwnProfile,)
