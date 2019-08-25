@@ -9,6 +9,7 @@ from profile_api import permissions
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 
 
 class HelloApiView(APIView):
@@ -115,3 +116,15 @@ class UserProfileViewset(viewsets.ModelViewSet):
 class UserLoginAPIView(ObtainAuthToken):
     """handle user authentication tokens"""
     renderer_classes=api_settings.DEFAULT_RENDERER_CLASSES
+
+class UserProfileFeedItemViewset(viewsets.ModelViewSet):
+    """handles creating updating and deleting user profile items"""
+    authentication_classes=(TokenAuthentication,)
+    serializer_class=serializers.ProfileFeedItemSerializer
+    queryset=models.ProfileFeedItem.objects.all()
+    #permission_classes=(permissions.UpdateOwnStatus,IsAuthenticatedOrReadOnly)
+    permission_classes=(permissions.UpdateOwnStatus,IsAuthenticated)
+
+    def perform_create(self,serializer):
+        """sets the logged in user as the value for the user_profile.we override this method for the purpose"""
+        serializer.save(user_profile=self.request.user)

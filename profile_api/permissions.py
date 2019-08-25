@@ -12,4 +12,13 @@ class UpdateOwnProfile(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return obj.id==request.user.id#for update/delete where user profile will be atttached wi    th the rquest parameterso that it can be compared with object
+            return obj.id==request.user.id#for update/delete where user profile will be atttached wi    th the rquest parameterso that it can be compared with object
+
+class UpdateOwnStatus(permissions.BasePermission):
+    """allow users to update their own status"""
+    def has_object_permission(self,request,view,obj):
+        """check the user is trying to update their own status"""
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        return obj.user_profile.id==request.user.id
